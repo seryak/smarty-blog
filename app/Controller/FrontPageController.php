@@ -6,8 +6,8 @@ namespace App\Controller;
 
 class FrontPageController
 {
-    public function index(): void
+    public function index(): string
     {
-        echo 'frontpage';
+        return 'frontpage';
     }
 }

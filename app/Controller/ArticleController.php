@@ -6,8 +6,8 @@ namespace App\Controller;
 
 class ArticleController
 {
-    public function show(string $id): void
+    public function show(string $id): string
     {
-        echo 'articlepage ' . $id;
+        return 'articlepage ' . $id;
     }
 }

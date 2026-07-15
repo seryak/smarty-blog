@@ -6,8 +6,8 @@ namespace App\Controller;
 
 class ErrorPageController
 {
-    public function error(): void
+    public function error(): string
     {
-        echo 'errorpage';
+        return 'errorpage';
     }
 }

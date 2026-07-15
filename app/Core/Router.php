@@ -10,16 +10,21 @@ use App\Controller\FrontPageController;
 
 class Router
 {
-    public function dispatch(): void
-    {
-        $path = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
-        $segments = $path === '' ? [] : explode('/', $path);
+    private readonly UrlParser $urlParser;
 
-        match (true) {
-            $segments === [] => (new FrontPageController())->index(),
-            count($segments) === 2 && $segments[0] === 'article' => (new ArticleController())->show($segments[1]),
-            default => (new ErrorPageController())->error(),
-        };
+    public function __construct(
+    ) {
+        $this->urlParser = new UrlParser();
     }
 
+    public function resolve(string $requestUri): ControllerAction
+    {
+        $segments = $this->urlParser->parse($requestUri);
+
+        return match (true) {
+            $segments === [] => new ControllerAction(new FrontPageController(), 'index'),
+            count($segments) === 2 && $segments[0] === 'article' => new ControllerAction(new ArticleController(), 'show', [$segments[1]]),
+            default => new ControllerAction(new ErrorPageController(), 'error'),
+        };
+    }
 }
