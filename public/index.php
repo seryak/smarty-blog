@@ -2,4 +2,9 @@
 
 declare(strict_types=1);
 
-echo $_SERVER['REQUEST_URI'];
+use App\Core\Router;
+
+require dirname(__DIR__) . '/vendor/autoload.php';
+
+$router = new Router();
+$router->dispatch();
