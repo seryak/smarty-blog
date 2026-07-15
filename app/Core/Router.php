@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 namespace App\Core;
+
 use App\Controller\ArticleController;
 use App\Controller\ErrorPageController;
 use App\Controller\FrontPageController;
