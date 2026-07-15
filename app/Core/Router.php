@@ -13,19 +13,13 @@ class Router
     public function dispatch(): void
     {
         $path = trim(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), '/');
-        [$action, $detail] = $segments = explode('/', $path);
+        $segments = $path === '' ? [] : explode('/', $path);
 
-        if (count($segments) !== 2) {
-            (new ErrorPageController())->error();
-            return;
-        }
-
-        [$controller, $method] = match ($action) {
-            '' => [new FrontPageController(), 'index'],
-            'article' => [new ArticleController(), 'show'],
-            default => [new ErrorPageController(), 'error'],
+        match (true) {
+            $segments === [] => (new FrontPageController())->index(),
+            count($segments) === 2 && $segments[0] === 'article' => (new ArticleController())->show($segments[1]),
+            default => (new ErrorPageController())->error(),
         };
-
-        $controller->{$method}($detail);
     }
+
 }
