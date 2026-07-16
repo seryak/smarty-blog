@@ -19,7 +19,7 @@ final class AppTest extends TestCase
     #[TestDox('run() передаёт Container в controller экшена перед его вызовом')]
     public function test_run_injects_container_into_action_controller(): void
     {
-        $controller = new class extends AbstractController {
+        $controller = new class () extends AbstractController {
             public function handle(): string
             {
                 return 'test';
