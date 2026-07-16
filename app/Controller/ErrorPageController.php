@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-class ErrorPageController
+class ErrorPageController extends AbstractController
 {
     public function error(): string
     {

@@ -17,6 +17,7 @@ class App
 
     public function run(): void
     {
+        $this->action->setContainer($this->container);
         echo ($this->action)();
     }
 }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-class ArticleController
+class ArticleController extends AbstractController
 {
     public function show(string $id): string
     {
