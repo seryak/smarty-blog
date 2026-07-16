@@ -2,7 +2,8 @@
     "name": "smarty-blog/smarty-blog",
     "require": {
         "php": ">=8.1",
-        "smarty/smarty": "^5.8"
+        "smarty/smarty": "^5.8",
+        "vlucas/phpdotenv": "^5.6"
     },
     "require-dev": {
         "phpunit/phpunit": "^10.5",

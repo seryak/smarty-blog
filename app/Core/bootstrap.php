@@ -7,9 +7,14 @@ use App\Core\Container;
 use App\Core\SmartyEngine;
 use App\Core\TemplateEngine;
 use App\Core\View;
+use Dotenv\Dotenv;
 
 require dirname(__DIR__) . '/../vendor/autoload.php';
+
+Dotenv::createImmutable(dirname(__DIR__) . '/..')->safeLoad();
+
 $viewConfig = require dirname(__DIR__) . '/../config/view.php';
+$databaseConfig = require dirname(__DIR__) . '/../config/database.php';
 
 $container = new Container();
 
