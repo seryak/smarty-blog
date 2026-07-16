@@ -6,9 +6,11 @@ class App
 {
 
     protected ControllerAction $action;
+    protected Container $container;
 
-    public function __construct(string $requestUri)
+    public function __construct(Container $container, string $requestUri)
     {
+        $this->container = $container;
         $router = new Router();
         $this->action = $router->resolve($requestUri);
     }
