@@ -6,13 +6,19 @@ namespace App\Controller;
 
 use App\Core\View;
 use App\Repository\ArticleRepository;
+use App\Repository\CategoryRepository;
 
 class FrontPageController extends AbstractController
 {
     public function index(): string
     {
-        $articles = $this->container->get(ArticleRepository::class)->latest();
+        $categories = $this->container->get(CategoryRepository::class)->hasArticles();
+//        $articlesByCategory = $this->container->get(ArticleRepository::class)->latestPerCategoryWindow(3);
+        $articlesByCategory = $this->container->get(ArticleRepository::class)->latestPerCategoryLateral(3);
 
-        return $this->container->get(View::class)->render('front.tpl', ['articles' => $articles]);
+        return $this->container->get(View::class)->render('front.tpl', [
+            'categories' => $categories,
+            'articlesByCategory' => $articlesByCategory,
+        ]);
     }
 }

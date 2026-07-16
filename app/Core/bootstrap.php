@@ -10,6 +10,7 @@ use App\Core\SmartyEngine;
 use App\Core\TemplateEngine;
 use App\Core\View;
 use App\Repository\ArticleRepository;
+use App\Repository\CategoryRepository;
 use Dotenv\Dotenv;
 
 require dirname(__DIR__) . '/../vendor/autoload.php';
@@ -47,6 +48,8 @@ $container->bind(PDO::class, function () use ($databaseConfig) {
 $container->bind(Database::class, fn (Container $c) => new Database($c->get(PDO::class)));
 
 $container->bind(ArticleRepository::class, fn (Container $c) => new ArticleRepository($c->get(Database::class)));
+
+$container->bind(CategoryRepository::class, fn (Container $c) => new CategoryRepository($c->get(Database::class)));
 
 $action = (new Router())->resolve($_SERVER['REQUEST_URI']);
 
