@@ -24,4 +24,24 @@ abstract class AbstractRepository
             ['id' => $id],
         );
     }
+
+    /**
+     * @param array<string, mixed> $data
+     */
+    public function insert(array $data): int
+    {
+        $columns = array_keys($data);
+        $placeholders = array_map(static fn (string $column): string => ':' . $column, $columns);
+
+        $sql = sprintf(
+            'INSERT INTO %s (%s) VALUES (%s)',
+            static::TABLE,
+            implode(', ', $columns),
+            implode(', ', $placeholders),
+        );
+
+        $this->db->execute($sql, $data);
+
+        return (int) $this->db->lastInsertId();
+    }
 }
