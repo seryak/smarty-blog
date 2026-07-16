@@ -20,6 +20,20 @@ class ArticleRepository extends AbstractRepository
     }
 
     /**
+     * @return list<array<string, mixed>>
+     */
+    public function byCategory(int $categoryId): array
+    {
+        return $this->db->fetchAll(
+            'SELECT a.* FROM articles a
+             JOIN article_category ac ON ac.article_id = a.id
+             WHERE ac.category_id = :category_id
+             ORDER BY a.published_at DESC',
+            ['category_id' => $categoryId],
+        );
+    }
+
+    /**
      * Вариант 1: window function (ROW_NUMBER).
      *
      * Один запрос. БД нумерует статьи внутри каждой категории по дате и

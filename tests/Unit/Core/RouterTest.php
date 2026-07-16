@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Tests\Unit\Core;
 
 use App\Controller\ArticleController;
+use App\Controller\CategoryController;
 use App\Controller\ErrorPageController;
 use App\Controller\FrontPageController;
 use App\Core\Router;
@@ -39,6 +40,15 @@ final class RouterTest extends TestCase
         $action = (new Router())->resolve('/article/42?ref=newsletter');
 
         self::assertInstanceOf(ArticleController::class, $action->controller);
+        self::assertSame('show', $action->method);
+    }
+
+    #[TestDox('Диспетчеризация /category/{id} вызывает CategoryController::show() с этим id')]
+    public function test_resolve_category_path_to_category_show_with_id(): void
+    {
+        $action = (new Router())->resolve('/category/7');
+
+        self::assertInstanceOf(CategoryController::class, $action->controller);
         self::assertSame('show', $action->method);
     }
 
