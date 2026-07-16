@@ -2,10 +2,5 @@
 
 declare(strict_types=1);
 
-use App\Core\Router;
-
-require dirname(__DIR__) . '/vendor/autoload.php';
-
-$router = new Router();
-$action = $router->resolve($_SERVER['REQUEST_URI']);
-echo $action();
+$app = require dirname(__DIR__) . '/app/Core/bootstrap.php';
+$app->run();
