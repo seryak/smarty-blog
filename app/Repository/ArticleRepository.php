@@ -31,7 +31,8 @@ class ArticleRepository extends AbstractRepository
     public function latestPerCategoryWindow(int $perCategory = 3): array
     {
         $rows = $this->db->fetchAll(
-            'SELECT ranked.*
+            'SELECT ranked.id, ranked.title, ranked.description, ranked.`text`,
+                    ranked.image, ranked.views, ranked.published_at, ranked.category_id
              FROM (
                  SELECT
                      a.*,
