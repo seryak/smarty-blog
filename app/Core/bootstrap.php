@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Core\App;
 use App\Core\Container;
 use App\Core\Database;
+use App\Core\Request;
 use App\Core\Router;
 use App\Core\SmartyEngine;
 use App\Core\TemplateEngine;
@@ -46,11 +47,9 @@ $container->bind(PDO::class, function () use ($databaseConfig) {
 });
 
 $container->bind(Database::class, fn (Container $c) => new Database($c->get(PDO::class)));
-
 $container->bind(ArticleRepository::class, fn (Container $c) => new ArticleRepository($c->get(Database::class)));
-
 $container->bind(CategoryRepository::class, fn (Container $c) => new CategoryRepository($c->get(Database::class)));
+$container->bind(Request::class, fn () => new Request($_GET, $_SERVER));
 
-$action = (new Router())->resolve($_SERVER['REQUEST_URI']);
-
+$action = (new Router($container->get(Request::class)))->resolve();
 return new App($container, $action);

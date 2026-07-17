@@ -12,15 +12,18 @@ use App\Controller\FrontPageController;
 class Router
 {
     private readonly UrlParser $urlParser;
+    private readonly Request $request;
 
     public function __construct(
+        Request $request,
     ) {
         $this->urlParser = new UrlParser();
+        $this->request = $request;
     }
 
-    public function resolve(string $requestUri): ControllerAction
+    public function resolve(): ControllerAction
     {
-        $segments = $this->urlParser->parse($requestUri);
+        $segments = $this->urlParser->parse($this->request->uri());
 
         return match (true) {
             $segments === [] => new ControllerAction(new FrontPageController(), 'index'),
