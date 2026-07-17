@@ -2,8 +2,13 @@
 
 declare(strict_types=1);
 
+use App\Controller\ArticleController;
+use App\Controller\CategoryController;
+use App\Controller\ErrorPageController;
+use App\Controller\FrontPageController;
 use App\Core\App;
 use App\Core\Container;
+use App\Core\ControllerFactory;
 use App\Core\Database;
 use App\Core\Request;
 use App\Core\Router;
@@ -51,5 +56,27 @@ $container->bind(ArticleRepository::class, fn (Container $c) => new ArticleRepos
 $container->bind(CategoryRepository::class, fn (Container $c) => new CategoryRepository($c->get(Database::class)));
 $container->bind(Request::class, fn () => new Request($_GET, $_SERVER));
 
-$action = (new Router($container->get(Request::class)))->resolve();
-return new App($container, $action);
+$container->bind(FrontPageController::class, fn (Container $c) => new FrontPageController(
+    $c->get(CategoryRepository::class),
+    $c->get(ArticleRepository::class),
+    $c->get(View::class),
+));
+
+$container->bind(ArticleController::class, fn (Container $c) => new ArticleController(
+    $c->get(ArticleRepository::class),
+    $c->get(View::class),
+));
+
+$container->bind(CategoryController::class, fn (Container $c) => new CategoryController(
+    $c->get(CategoryRepository::class),
+    $c->get(ArticleRepository::class),
+    $c->get(Request::class),
+    $c->get(View::class),
+));
+
+$container->bind(ErrorPageController::class, fn () => new ErrorPageController());
+
+$route = (new Router($container->get(Request::class)))->resolve();
+$action = (new ControllerFactory($container))->create($route);
+
+return new App($action);

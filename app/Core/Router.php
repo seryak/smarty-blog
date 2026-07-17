@@ -8,6 +8,7 @@ use App\Controller\ArticleController;
 use App\Controller\CategoryController;
 use App\Controller\ErrorPageController;
 use App\Controller\FrontPageController;
+use App\DTO\RouteDTO;
 
 class Router
 {
@@ -21,15 +22,15 @@ class Router
         $this->request = $request;
     }
 
-    public function resolve(): ControllerAction
+    public function resolve(): RouteDTO
     {
         $segments = $this->urlParser->parse($this->request->uri());
 
         return match (true) {
-            $segments === [] => new ControllerAction(new FrontPageController(), 'index'),
-            count($segments) === 2 && $segments[0] === 'article' => new ControllerAction(new ArticleController(), 'show', [$segments[1]]),
-            count($segments) === 2 && $segments[0] === 'category' => new ControllerAction(new CategoryController(), 'show', [$segments[1]]),
-            default => new ControllerAction(new ErrorPageController(), 'error'),
+            $segments === [] => new RouteDTO(FrontPageController::class, 'index'),
+            count($segments) === 2 && $segments[0] === 'article' => new RouteDTO(ArticleController::class, 'show', [$segments[1]]),
+            count($segments) === 2 && $segments[0] === 'category' => new RouteDTO(CategoryController::class, 'show', [$segments[1]]),
+            default => new RouteDTO(ErrorPageController::class, 'error'),
         };
     }
 }

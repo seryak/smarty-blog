@@ -10,13 +10,20 @@ use App\Repository\CategoryRepository;
 
 class FrontPageController extends AbstractController
 {
+    public function __construct(
+        private readonly CategoryRepository $categoryRepository,
+        private readonly ArticleRepository $articleRepository,
+        private readonly View $view,
+    ) {
+    }
+
     public function index(): string
     {
-        $categories = $this->container->get(CategoryRepository::class)->hasArticles();
-        //        $articlesByCategory = $this->container->get(ArticleRepository::class)->latestPerCategoryWindow(3);
-        $articlesByCategory = $this->container->get(ArticleRepository::class)->latestPerCategoryLateral(3);
+        $categories = $this->categoryRepository->hasArticles();
+        //        $articlesByCategory = $this->articleRepository->latestPerCategoryWindow(3);
+        $articlesByCategory = $this->articleRepository->latestPerCategoryLateral(3);
 
-        return $this->container->get(View::class)->render('front.tpl', [
+        return $this->view->render('front.tpl', [
             'categories' => $categories,
             'articlesByCategory' => $articlesByCategory,
         ]);

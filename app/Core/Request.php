@@ -19,7 +19,7 @@ final class Request
     public function query(string $key, ?string $default = null): ?string
     {
         $value = $this->query[$key] ?? null;
-        return is_scalar($value) ? $value : $default;
+        return is_scalar($value) ? (string) $value : $default;
     }
 
     public function uri(): string

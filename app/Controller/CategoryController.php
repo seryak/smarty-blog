@@ -4,16 +4,25 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Core\Request;
 use App\Core\View;
 use App\Repository\ArticleRepository;
 use App\Repository\CategoryRepository;
 
 class CategoryController extends AbstractController
 {
+    public function __construct(
+        private readonly CategoryRepository $categoryRepository,
+        private readonly ArticleRepository $articleRepository,
+        private readonly Request $request,
+        private readonly View $view,
+    ) {
+    }
+
     public function show(string $id): string
     {
         $categoryId = (int) $id;
-        $category = $this->container->get(CategoryRepository::class)->find($categoryId);
+        $category = $this->categoryRepository->find($categoryId);
 
         if ($category === null) {
             http_response_code(404);
@@ -21,9 +30,9 @@ class CategoryController extends AbstractController
             return 'Category not found';
         }
 
-        $articles = $this->container->get(ArticleRepository::class)->byCategory($categoryId);
+        $articles = $this->articleRepository->byCategory($categoryId);
 
-        return $this->container->get(View::class)->render('category.tpl', [
+        return $this->view->render('category.tpl', [
             'category' => $category,
             'articles' => $articles,
         ]);
