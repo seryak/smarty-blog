@@ -19,10 +19,16 @@ abstract class AbstractRepository
      */
     public function find(int $id): ?array
     {
-        return $this->db->fetchOne(
-            sprintf('SELECT * FROM %s WHERE id = :id', static::TABLE),
-            ['id' => $id],
+        $sql = strtr(
+            <<<'SQL'
+                SELECT *
+                FROM {{table}}
+                WHERE id = :id
+                SQL,
+            ['{{table}}' => static::TABLE],
         );
+
+        return $this->db->fetchOne($sql, ['id' => $id]);
     }
 
     /**
@@ -33,11 +39,16 @@ abstract class AbstractRepository
         $columns = array_keys($data);
         $placeholders = array_map(static fn (string $column): string => ':' . $column, $columns);
 
-        $sql = sprintf(
-            'INSERT INTO %s (%s) VALUES (%s)',
-            static::TABLE,
-            implode(', ', $columns),
-            implode(', ', $placeholders),
+        $sql = strtr(
+            <<<'SQL'
+                INSERT INTO {{table}} ({{columns}})
+                VALUES ({{placeholders}})
+                SQL,
+            [
+                '{{table}}' => static::TABLE,
+                '{{columns}}' => implode(', ', $columns),
+                '{{placeholders}}' => implode(', ', $placeholders),
+            ],
         );
 
         $this->db->execute($sql, $data);

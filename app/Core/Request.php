@@ -16,6 +16,9 @@ final class Request
     ) {
     }
 
+    /**
+     * @return ($default is null ? string|null : string)
+     */
     public function query(string $key, ?string $default = null): ?string
     {
         $value = $this->query[$key] ?? null;

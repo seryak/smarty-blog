@@ -7,15 +7,25 @@ namespace App\Repository;
 class CategoryRepository extends AbstractRepository
 {
     protected const TABLE = 'categories';
+    private const ARTICLE_PIVOT_TABLE = 'article_category';
 
     /**
      * @return list<array<string, mixed>>
      */
     public function hasArticles(): array
     {
-        return $this->db->fetchAll(
-            'SELECT DISTINCT c.* FROM categories c
-             JOIN article_category ac ON ac.category_id = c.id',
+        $sql = strtr(
+            <<<'SQL'
+                SELECT DISTINCT c.*
+                FROM {{table}} AS c
+                INNER JOIN {{pivot}} AS ac ON ac.category_id = c.id
+                SQL,
+            [
+                '{{table}}' => static::TABLE,
+                '{{pivot}}' => self::ARTICLE_PIVOT_TABLE,
+            ],
         );
+
+        return $this->db->fetchAll($sql);
     }
 }
