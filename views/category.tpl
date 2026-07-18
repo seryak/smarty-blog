@@ -19,3 +19,15 @@
     <li>В этой категории пока нет статей.</li>
 {/foreach}
 </ul>
+
+{if $paginator->totalPages() > 1}
+    <nav>
+        {if $paginator->hasPrev()}
+            <a href="/category/{$category.id}?sort={$sort}&dir={$direction}&page={$paginator->page-1}">← Назад</a>
+        {/if}
+        <span>Страница {$paginator->page} из {$paginator->totalPages()}</span>
+        {if $paginator->hasNext()}
+            <a href="/category/{$category.id}?sort={$sort}&dir={$direction}&page={$paginator->page+1}">Вперёд →</a>
+        {/if}
+    </nav>
+{/if}
