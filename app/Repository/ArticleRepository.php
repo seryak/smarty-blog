@@ -41,24 +41,49 @@ class ArticleRepository extends AbstractRepository
         int $categoryId,
         ArticleSort $sort = ArticleSort::Date,
         SortDirection $direction = SortDirection::Desc,
+        int $limit = 10,
+        int $offset = 0,
     ): array {
         $sql = strtr(
             <<<'SQL'
                 SELECT a.*
                 FROM {{table}} AS a
                 INNER JOIN {{pivot}} AS ac ON ac.article_id = a.id
-                WHERE ac.category_id = :category_id
+                WHERE ac.category_id = {{category_id}}
                 ORDER BY a.{{sort_column}} {{sort_direction}}
+                LIMIT {{limit}} OFFSET {{offset}}
                 SQL,
             [
                 '{{table}}' => static::TABLE,
                 '{{pivot}}' => self::CATEGORY_PIVOT_TABLE,
                 '{{sort_column}}' => $sort->column(),
                 '{{sort_direction}}' => $direction->value,
+                '{{limit}}' => (string) $limit,
+                '{{offset}}' => (string) $offset,
+                '{{category_id}}' => (string) $categoryId,
             ],
         );
 
-        return $this->db->fetchAll($sql, ['category_id' => $categoryId]);
+        return $this->db->fetchAll($sql);
+    }
+
+    public function countByCategory(int $categoryId): int
+    {
+        $sql = strtr(
+            <<<'SQL'
+                SELECT COUNT(*) AS total
+                FROM {{pivot}}
+                WHERE category_id = {{category_id}}
+                SQL,
+            [
+                '{{pivot}}' => self::CATEGORY_PIVOT_TABLE,
+                '{{category_id}}' => $categoryId
+            ],
+        );
+
+        $row = $this->db->fetchOne($sql);
+
+        return (int) ($row['total'] ?? 0);
     }
 
     /**
