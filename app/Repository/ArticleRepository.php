@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
+use App\Enum\ArticleSort;
+use App\Enum\SortDirection;
+
 class ArticleRepository extends AbstractRepository
 {
     protected const TABLE = 'articles';
@@ -34,15 +37,28 @@ class ArticleRepository extends AbstractRepository
     /**
      * @return list<array<string, mixed>>
      */
-    public function byCategory(int $categoryId): array
-    {
-        return $this->db->fetchAll(
-            'SELECT a.* FROM articles a
-             JOIN article_category ac ON ac.article_id = a.id
-             WHERE ac.category_id = :category_id
-             ORDER BY a.published_at DESC',
-            ['category_id' => $categoryId],
+    public function byCategory(
+        int $categoryId,
+        ArticleSort $sort = ArticleSort::Date,
+        SortDirection $direction = SortDirection::Desc,
+    ): array {
+        $sql = strtr(
+            <<<'SQL'
+                SELECT a.*
+                FROM {{table}} AS a
+                INNER JOIN {{pivot}} AS ac ON ac.article_id = a.id
+                WHERE ac.category_id = :category_id
+                ORDER BY a.{{sort_column}} {{sort_direction}}
+                SQL,
+            [
+                '{{table}}' => static::TABLE,
+                '{{pivot}}' => self::CATEGORY_PIVOT_TABLE,
+                '{{sort_column}}' => $sort->column(),
+                '{{sort_direction}}' => $direction->value,
+            ],
         );
+
+        return $this->db->fetchAll($sql, ['category_id' => $categoryId]);
     }
 
     /**

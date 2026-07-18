@@ -6,6 +6,8 @@ namespace App\Controller;
 
 use App\Core\Request;
 use App\Core\View;
+use App\Enum\ArticleSort;
+use App\Enum\SortDirection;
 use App\Repository\ArticleRepository;
 use App\Repository\CategoryRepository;
 
@@ -30,11 +32,16 @@ class CategoryController extends AbstractController
             return 'Category not found';
         }
 
-        $articles = $this->articleRepository->byCategory($categoryId);
+        $sort = ArticleSort::tryFrom($this->request->query('sort', ArticleSort::Date->value)) ?? ArticleSort::Date;
+        $direction = SortDirection::tryFrom($this->request->query('dir', SortDirection::Desc->value)) ?? SortDirection::Desc;
+
+        $articles = $this->articleRepository->byCategory($categoryId, $sort, $direction);
 
         return $this->view->render('category.tpl', [
             'category' => $category,
             'articles' => $articles,
+            'sort' => $sort->value,
+            'direction' => $direction->value,
         ]);
     }
 }
