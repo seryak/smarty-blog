@@ -27,6 +27,7 @@ class ArticleController extends AbstractController
 
         return $this->view->render('article.tpl', [
             'article' => $article,
+            'similar' => $this->articleRepository->similar((int) $id),
         ]);
     }
 }

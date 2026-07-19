@@ -67,6 +67,34 @@ class ArticleRepository extends AbstractRepository
         return $this->db->fetchAll($sql);
     }
 
+    /**
+     * @return list<array<string, mixed>>
+     */
+    public function similar(int $articleId, int $limit = 3): array
+    {
+        $sql = strtr(
+            <<<'SQL'
+                SELECT DISTINCT a.*
+                FROM {{table}} AS a
+                INNER JOIN {{pivot}} AS ac ON ac.article_id = a.id
+                WHERE ac.category_id IN (
+                    SELECT category_id FROM {{pivot}} WHERE article_id = {{article_id}}
+                )
+                AND a.id <> {{article_id}}
+                ORDER BY a.published_at DESC
+                LIMIT {{limit}}
+                SQL,
+            [
+                '{{table}}' => static::TABLE,
+                '{{pivot}}' => self::CATEGORY_PIVOT_TABLE,
+                '{{article_id}}' => (string) $articleId,
+                '{{limit}}' => (string) $limit,
+            ],
+        );
+
+        return $this->db->fetchAll($sql);
+    }
+
     public function countByCategory(int $categoryId): int
     {
         $sql = strtr(
