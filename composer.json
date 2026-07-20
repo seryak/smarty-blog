@@ -17,9 +17,13 @@
     "autoload-dev": {
         "psr-4": { "App\\Tests\\": "tests/" }
     },
+    "config": {
+        "platform": { "php": "8.3.99" }
+    },
     "scripts": {
         "cs-check": "php-cs-fixer fix --dry-run --diff",
         "cs-fix": "php-cs-fixer fix",
-        "stan": "phpstan analyse"
+        "stan": "phpstan analyse",
+        "test": "phpunit --testdox"
     }
 }
