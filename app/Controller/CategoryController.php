@@ -20,8 +20,9 @@ class CategoryController extends AbstractController
         private readonly CategoryRepository $categoryRepository,
         private readonly ArticleRepository $articleRepository,
         private readonly Request $request,
-        private readonly View $view,
+        View $view,
     ) {
+        parent::__construct($view);
     }
 
     public function show(string $id): string
@@ -30,9 +31,7 @@ class CategoryController extends AbstractController
         $category = $this->categoryRepository->find($categoryId);
 
         if ($category === null) {
-            http_response_code(404);
-
-            return 'Category not found';
+            return $this->notFound('Category not found');
         }
 
         $sort = ArticleSort::tryFrom($this->request->query('sort', ArticleSort::Date->value));

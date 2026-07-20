@@ -11,8 +11,9 @@ class ArticleController extends AbstractController
 {
     public function __construct(
         private readonly ArticleRepository $articleRepository,
-        private readonly View $view,
+        View $view,
     ) {
+        parent::__construct($view);
     }
 
     public function show(string $id): string
@@ -20,9 +21,7 @@ class ArticleController extends AbstractController
         $article = $this->articleRepository->find((int) $id);
 
         if ($article === null) {
-            http_response_code(404);
-
-            return 'Article not found';
+            return $this->notFound('Article not found');
         }
 
         return $this->view->render('article.tpl', [

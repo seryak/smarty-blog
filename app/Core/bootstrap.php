@@ -74,7 +74,9 @@ $container->bind(CategoryController::class, fn (Container $c) => new CategoryCon
     $c->get(View::class),
 ));
 
-$container->bind(ErrorPageController::class, fn () => new ErrorPageController());
+$container->bind(ErrorPageController::class, fn (Container $c) => new ErrorPageController(
+    $c->get(View::class),
+));
 
 $route = (new Router($container->get(Request::class)))->resolve();
 $action = (new ControllerFactory($container))->create($route);

@@ -13,8 +13,9 @@ class FrontPageController extends AbstractController
     public function __construct(
         private readonly CategoryRepository $categoryRepository,
         private readonly ArticleRepository $articleRepository,
-        private readonly View $view,
+        View $view,
     ) {
+        parent::__construct($view);
     }
 
     public function index(): string

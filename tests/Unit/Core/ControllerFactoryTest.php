@@ -8,6 +8,7 @@ use App\Controller\AbstractController;
 use App\Core\Container;
 use App\Core\ControllerAction;
 use App\Core\ControllerFactory;
+use App\Core\View;
 use App\DTO\RouteDTO;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\TestDox;
@@ -23,7 +24,7 @@ final class ControllerFactoryTest extends TestCase
     #[TestDox('create() собирает ControllerAction из route descriptor и контейнера')]
     public function test_create_returns_controller_action_from_route_descriptor_and_container(): void
     {
-        $controller = new class () extends AbstractController {
+        $controller = new class ($this->createStub(View::class)) extends AbstractController {
             public function handle(string $value): string
             {
                 return 'handled ' . $value;
@@ -44,7 +45,7 @@ final class ControllerFactoryTest extends TestCase
     #[TestDox('create() бросает RuntimeException если контейнер вернул не контроллер')]
     public function test_create_throws_when_resolved_service_is_not_controller(): void
     {
-        $controller = new class () extends AbstractController {
+        $controller = new class ($this->createStub(View::class)) extends AbstractController {
         };
 
         $container = new Container();
