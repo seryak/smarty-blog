@@ -1,22 +1,39 @@
-<h1>{$article.title|escape}</h1>
-<p>{$article.description|escape}</p>
+{extends file='layout.tpl'}
 
-<img src="{$article.image}">
+{block name=title}{$article.title}{/block}
 
-<div>{$article.text|escape}</div>
+{block name=content}
+<article class="mx-auto" style="max-width: 800px;">
+    <h1 class="h2 mb-2">{$article.title}</h1>
+    <p class="article-date mb-4">
+        {$article.published_at} · просмотров: {$article.views}
+    </p>
 
-<footer>
-    <span>Просмотров: {$article.views|escape}</span>
-    <span>Опубликовано: {$article.published_at|escape}</span>
-</footer>
+    <img src="{$article.image}" class="img-fluid rounded mb-4 w-100" alt="{$article.title}">
+
+    <p class="lead text-secondary">{$article.description}</p>
+
+    <div class="fs-6 lh-lg">{$article.text}</div>
+</article>
 
 {if $similar}
-<section>
-    <h2>Похожие статьи</h2>
-    <ul>
+<section class="mt-5 pt-4 border-top">
+    <h2 class="category-heading mb-4">Похожие статьи</h2>
+    <div class="row g-4">
     {foreach $similar as $item}
-        <li><a href="/article/{$item.id}">{$item.title|escape}</a></li>
+        <div class="col-md-4">
+            <article class="card article-card h-100">
+                <img src="{$item.image}" class="card-img-top" alt="{$item.title}">
+                <div class="card-body px-0">
+                    <h3 class="article-title mb-1">
+                        <a href="/article/{$item.id}" class="text-reset text-decoration-none">{$item.title}</a>
+                    </h3>
+                    <p class="article-date mb-0">{$item.published_at}</p>
+                </div>
+            </article>
+        </div>
     {/foreach}
-    </ul>
+    </div>
 </section>
 {/if}
+{/block}
