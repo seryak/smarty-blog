@@ -81,4 +81,4 @@ $container->bind(ErrorPageController::class, fn (Container $c) => new ErrorPageC
 $route = (new Router($container->get(Request::class)))->resolve();
 $action = (new ControllerFactory($container))->create($route);
 
-return new App($action);
+return new App($action, $container->get(View::class));
